@@ -19,6 +19,13 @@
     <![endif]-->
   </head>
   <body>
+
+    <?php
+  	session_start();
+  	if($_SESSION['user'] != NULL){
+		header("Location:index.php");
+  	}
+  ?>
     
 	<div class="navbar navbar-inverse nabvar-fixed-top" role="navigation">
 		<div class="container">
@@ -84,42 +91,181 @@
 						</ul>
 					</li>
 					<li><a href="#contact" data-toggle="modal">Kontakt</a></li>
+						<?php
+							if($_SESSION['user'] == NULL){
+							
+								//echo '<li><a href="#" data-toggle="modal" data-target="#login-modal">Login</a></li>';
+								echo '<li>';
+								echo '<a href="#" data-toggle="modal" data-target="#login-modal">';
+								echo 'Prijava';
+								echo '</a></li>';
+
+							}else{
+								echo '<li><a href="logout.php">Odjava</li></a>';
+							}
+						?>
 				</ul>
 			</div> <!--/.nav-collapse -->
 		</div>
 	</div>
+
+  
 	
-	<div class="container">
-		<div class="jumbotron text-center">
-			<h1>Vaša poruka je poslana!</h1>
-			<p>
-
-			<?php
-
-			$name = $_POST['name'];
-	        $email = $_POST['email'];
-	        $message = $_POST['message'];
-	        $from = 'Demo Contact Form'; 
-	        $to = 'gadoschi@gmail.com'; 
-	        $subject = 'Message from Contact Demo ';
-	        
-	        $body = "Od: $name\n E-Mail: $email\n Poruka:\n $message";
-
-	        mail ($to, $subject, $body, $from)
-			?></p>
+	<div class="container-fluid">
+	    <section class="container">
+			<div class="container-page">				
+				<div class="col-md-6">
+					<h3 class="dark-grey">Registracija</h3>
+					
+					<form action="register.php" method="POST">
+					<div class="form-group col-lg-12">
+						<label>Korisničko ime</label>
+						<input type="" name="username" class="form-control" id="" value="">
+					</div>
+					
+					<div class="form-group col-lg-6">
+						<label>Lozinka</label>
+						<input type="password" name="password" class="form-control" id="" value="">
+					</div>
+					
+					<div class="form-group col-lg-6">
+						<label>Ponovi Lozinku</label>
+						<input type="password" name="password2" class="form-control" id="" value="">
+					</div>
 									
-			<a href="index.php" class="btn btn-primary">Na početnu!</a>
-		</div>
-		
+					<div style="margin-left: 25%;" class="form-group col-lg-6">
+						<label>Email Adresa</label>
+						<input type="email" name="email" class="form-control" id="" value="">
+					</div>	
+					
+				
+				</div>
+			
+				&nbsp
+				<div class="col-md-6">
+					<h3 class="dark-grey">Uvjeti korištenja</h3>
+					<p>
+						Ukoliko se odlučite na registraciju na stranici, prihvaćate uvjete TVZ Boarda!
+					</p>
+					<p>
+						Nemojte spamati i pomagajte kolegama.Nemojte spamati i pomagajte kolegama.Nemojte spamati i pomagajte kolegama.
+					</p>
+					<p>
+						Should there be an error in the description or pricing of a product, we will provide you with a full refund (Paragraph 13.5.6)
+					</p>
+					<p>
+						Nemojte spamati i pomagajte kolegama.Nemojte spamati i pomagajte kolegama.
+					</p>
+					
+					<button style="float:left;" type="submit" name="submit" class="btn btn-primary">Registracija</button>
+				</div>
+			</div>
+			</form>
+		</section>
 	</div>
-	
-	
+
+	<?php
+	if(isset($_POST['submit'])){
+
+		include 'includes/connection.php';
+
+		$username = $_POST['username'];
+		$username = mysqli_real_escape_string($conn, $username);
+		$password = md5($_POST['password']);
+		$password2 = md5($_POST['password2']);
+		$email = $_POST['email'];
+		$email = mysqli_real_escape_string($conn, $email);
+		$role = "korisnik";
+
+
+		//Provjera da li su inputi prazni
+		function is_empty($password, $username, $email){
+		if(empty($password) || empty($username) || empty($email))
+			{
+				echo '<div class="alert alert-warning" role="alert">Sva polja moraju biti ispunjena!</div>';
+				header("Refresh:2;url=registracija.php");
+				return false;
+			}else{
+				return true;
+			}
+		}
+
+		//duljina passworda
+		function pass_length($password){
+			if(strlen($password) < 6){
+				echo '<div class="alert alert-warning" role="alert">Lozinka mora imati više od 6 znakova!</div>';
+				header("Refresh:2;url=registracija.php");
+				return false;
+			}else{
+				return true;
+			}
+		}
+
+		// Funkcija za provjeru emaila
+		function is_valid_email($email){
+		global $conn;
+		$string = "SELECT * FROM tvu WHERE email = '$email'";
+		$query = mysqli_query($conn, $string);
+			if(mysqli_num_rows($query) > 0)
+			{
+				echo '<div class="alert alert-warning" role="alert">E-mail već postoji u bazi!</div>';
+				echo "</br>";
+				header("Refresh:2;url=registracija.php");
+				return false;
+			}else
+			{
+				return true;
+			}
+		}
+
+		// Funkcija za provjeru passworda
+		function is_valid_password($password, $password2){
+			if($password != $password2){
+				echo '<div class="alert alert-warning" role="alert">Lozinke se ne poklapaju!</div>';
+				echo "</br>";
+				header("Refresh:2;url=registracija.php;");
+			}else{
+				return true;
+			}
+		}
+
+		//Kreiranje korisnika
+		function create_user($username, $password, $email, $role){
+			global $conn;
+			$sql = "INSERT INTO tvu (ID, username, password, email, role) 
+				VALUES (NULL, '$username', '$password', '$role', 'korisnik')";
+			$result = mysqli_query($conn, $sql);
+			if($result){
+							  return true; // Uspjeh
+							}else{
+							  return false; // BUUUU
+							}
+						}
+
+
+		// Početak učitavanja
+			if (is_valid_email($email) && pass_length($password) && is_valid_password($password,$password2) && is_empty($password, $username, $email))
+			{
+				if (create_user($username, $password, $kontaktbroj, $email)) {
+					echo '<div class="alert alert-success" role="alert">Uspješno ste se registrirali!</br>Ubrzo će te biti prebačeni na početnu stranicu!</div>';		
+					echo 'Ako se automatski ne prebaci, kliknite <a href="login.php">ovdje</a>';	
+						header("Refresh:2;url=index.php");
+						}else{
+							echo 'Greška!';
+							header("url=registracija.php");
+						}
+					}
+
+
+		}
+	?>
+
 	<!-- footer -->
 	<div class="navbar navbar-inverse navbar-fixed-bottom" role="navigation">
 		<div class="container">
 		
 			<div class="navbar-text pull-left">
-				<p>&copy 2014 TVZB</p>
+				<p>&copy 2015 TVZB</p>
 			</div>
 			<div class="navbar-text pull-right">
 				<a href="#"><i class="fa fa-facebook-square fa-2x"></i></a>
@@ -135,29 +281,45 @@
 	<div class="modal fade" id="contact" role="dialog">
 		<div class="modal-dialog">
 			<div class="modal-content">
-
+				<form class="form-horizontal" role="form" action="output.php" method="post">
 					<div class="modal-header">
 						<h4 class="text-center">Kontakt</h4>
 					</div>
 					<div class="modal-body">
-							<div class="form-group">
-						
-								
-							</div>
+						<div class="form-group">
+					        <label for="name" class="col-sm-2 control-label">Ime</label>
+					        <div class="col-sm-10">
+					            <input type="text" class="form-control" id="name" name="name" placeholder="First & Last Name" value="">
+					        </div>
+					    </div>
+					    <div class="form-group">
+					        <label for="email" class="col-sm-2 control-label">Email</label>
+					        <div class="col-sm-10">
+					            <input type="email" class="form-control" id="email" name="email" placeholder="example@domain.com" value="">
+					        </div>
+					    </div>
+					    <div class="form-group">
+					        <label for="message" class="col-sm-2 control-label">Poruka</label>
+					        <div class="col-sm-10">
+					            <textarea class="form-control" rows="4" name="message"></textarea>
+					        </div>
+					    </div>
 					</div>
 							<div class="modal-footer">
 								<button type="submit" name="submit" id="submit" name="submit" class="btn btn-primary">Pošalji!</button></input>
 								<a class="btn btn-default" data-dismiss="modal">Zatvori</a>
 							</div>
-						
+						</form>
 			</div>
 		</div>
 	</div>
+	
+	
 	
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
-  </body>
+</body>
 </html>

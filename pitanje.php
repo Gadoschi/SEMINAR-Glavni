@@ -92,18 +92,28 @@
 					// Postavljanje pitanja
 					include 'includes/connection.php';
 					session_start(); 
-					
-						if ($_POST["potvrda"] != $_SESSION["potvrda"] OR $_SESSION["potvrda"]=='')  { 
+						
+						if ($_POST["vercode"] != $_SESSION["vercode"] OR $_SESSION["vercode"]=='')  { 
 							 echo  'Unijeli ste krivi kod!';
-								header("Refresh:2;url=registracija.php");
+								header("Refresh:2;url=index.php");
 						} else { 					
-							$username = mysqli_real_escape_string($_POST['username']);
-							$pitanje = $_POST['Pitanje'];
-							$kategorija = $_POST['Kategorija'];
+							$Ime = $_POST['Ime'];
+							$Ime = mysqli_escape_string($conn, $Ime);
+							$Pitanje = $_POST['Pitanje'];
+							$Pitanje = mysqli_escape_string($conn, $Pitanje);
+							$Kategorija = $_POST['Kategorija'];
+							$Kategorija = mysqli_escape_string($conn, $Kategorija);
 							
-							
-							mysql_query("INSERT INTO `menu`.`jela` (`ID`, `naziv`, `tip`, `opis`, `vegetarijanski`, `halal`, `koser`, `alergeni`, `cijena`) VALUES(NULL, '$Naziv','$Tip', '$Opis', '$Vegetarijanski', '$Halal', '$Koser', '$Alergeni', '$Cijena' ")  or die(mysql_error()); 
-							
+							function is_empty($Ime, $Pitanje, $Kategorija){
+								if(empty($Ime) || empty($Kategorija) || empty($Pitanje)){
+									echo '<div class="alert alert-warning" role="alert">Sva polja moraju biti ispunjena!</div>';
+									header("Refresh:2;url=index.php");
+								}
+							}
+
+							$sql = "INSERT INTO  `tvzb`.`tva` (`ID` ,`Ime` ,`Pitanje` ,`Kategorija` ,`Datum`)VALUES (NULL ,  '$Ime',  '$Pitanje',  '$Kategorija', CURRENT_TIMESTAMP)";
+
+							$result = mysqli_query($conn, $sql);
 							echo '<div class="alert alert-success" role="alert">Uspješno ste postavili pitanje!</div>';
 							header( "refresh:2;url=index.php" );
 							}; 

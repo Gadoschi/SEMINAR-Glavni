@@ -20,6 +20,9 @@
   </head>
   <body>
   
+  <?php
+  	session_start();
+  ?>
     
 	<div class="navbar navbar-inverse nabvar-fixed-top" role="navigation">
 		<div class="container">
@@ -38,42 +41,66 @@
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">I godina<b class="caret"></b></a>
 						<ul class="dropdown-menu">
 							<li class="dropdown-header">1. semestar</li>
-							<li><a href="#">Programiranje</a></li>
-							<li><a href="#">uvod u WEB tehnologije</a></li>
-							<li><a href="#">OOP</a></li>
+							<li><a href="./trazi.php?kolegij=Fizika">Fizika</a></li>
+							<li><a href="./trazi.php?kolegij=Matematika">Matematika</a></li>
+							<li><a href="./trazi.php?kolegij=Primjena Računala">Primjena Računala</a></li>
+							<li><a href="./trazi.php?kolegij=Programiranje">Programiranje</a></li>
+							<li><a href="./trazi.php?kolegij=Engleski jezik">Engleski jezik</a></li>
+							<li><a href="./trazi.php?kolegij=Njemački jezik">Njemački jezik</a></li>
 							<li class="divider"></li>
 							<li class="dropdown-header">2. semestar</li>
-							<li><a href="#">Baze podataka</a></li>
-							<li><a href="#">Arhitektura računala</a></li>
+							<li><a href="./trazi.php?kolegij=Matematika 2">Matematika II</a></li>
+							<li><a href="./trazi.php?kolegij=Objektno Orijentirano Programiranje">OOP</a></li>
+							<li><a href="./trazi.php?kolegij=Osnove Elektrotehnike">OEE</a></li>
+							<li><a href="./trazi.php?kolegij=Uvod u Web Tehnologije">UWT</a></li>
+							<li><a href="./trazi.php?kolegij=Poslovni engleski jezik">Poslovni engleski jezik</a></li>
+							<li><a href="./trazi.php?kolegij=Poslovni njemački jezik">Poslovni njemački jezik</a></li>
+
 						</ul>
 					</li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">II godina<b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li class="dropdown-header">1. semestar</li>
-							<li><a href="#">Programiranje</a></li>
-							<li><a href="#">uvod u WEB tehnologije</a></li>
-							<li><a href="#">OOP</a></li>
+							<li class="dropdown-header">3. semestar</li>
+							<li><a href="./trazi.php?kolegij=Algoritmi i Strukture Podataka">Algoritmi i strukture podataka</a></li>
+							<li><a href="./trazi.php?kolegij=Arhitektura Računala">Arhitektura računala</a></li>
+							<li><a href="./trazi.php?kolegij=Operacijski Sustavi">Operacijski sustavi</a></li>
+							<li><a href="./trazi.php?kolegij=Programiranje u Jeziku Jawa">Programiranje u jeziku Java</a></li>
+							<li><a href="./trazi.php?kolegij=Vjerojatnost i Statistika">Vjerojatnost i statistika</a></li>
 							<li class="divider"></li>
-							<li class="dropdown-header">2. semestar</li>
-							<li><a href="#">Baze podataka</a></li>
-							<li><a href="#">Arhitektura računala</a></li>
+							<li class="dropdown-header">4. semestar</li>
+							<li><a href="./trazi.php?kolegij=Baze Podataka">Baze podataka</a></li>
+							<li><a href="./trazi.php?kolegij=Programski Alati u Programiranju">Programski alati u programiranju</a></li>
+							<li><a href="./trazi.php?kolegij=Računalne Mreže">Računalne mreže</a></li>
+							<li><a href="./trazi.php?kolegij=Uvod u UNIX Sustave">Uvod u UNIX sustave</a></li>
 						</ul>
 					</li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">II godina<b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li class="dropdown-header">1. semestar</li>
-							<li><a href="#">Programiranje</a></li>
-							<li><a href="#">uvod u WEB tehnologije</a></li>
-							<li><a href="#">OOP</a></li>
+							<li class="dropdown-header">5. semestar</li>
+							<li><a href="./trazi.php?kolegij=Administracija Računalnih Mreža">Administracija računalnih mreža</a></li>
+							<li><a href="./trazi.php?kolegij=Administriranje UNIX Sustava">Administriranje UNIX sustava</a></li>
+							<li><a href="./trazi.php?kolegij=Seminar">Seminar</a></li>
 							<li class="divider"></li>
-							<li class="dropdown-header">2. semestar</li>
-							<li><a href="#">Baze podataka</a></li>
-							<li><a href="#">Arhitektura računala</a></li>
+							<li class="dropdown-header">6. semestar</li>
+							<li><a href="./trazi.php?kolegij=Završni Rad">Završni rad</a></li>
 						</ul>
 					</li>
 					<li><a href="#contact" data-toggle="modal">Kontakt</a></li>
+						<?php
+							if($_SESSION['user'] == NULL){
+							
+								//echo '<li><a href="#" data-toggle="modal" data-target="#login-modal">Login</a></li>';
+								echo '<li>';
+								echo '<a href="#" data-toggle="modal" data-target="#login-modal">';
+								echo 'Prijava';
+								echo '</a></li>';
+
+							}else{
+								echo '<li><a href="logout.php">Odjava</li></a>';
+							}
+						?>
 				</ul>
 			</div> <!--/.nav-collapse -->
 		</div>
@@ -101,7 +128,9 @@
 								<option value="Programiranja" name="Programiranje">Programiranje</option>
 								<option value="Elektrotehnike" name="Elektrotehnika">Elektrotehnika</option>
 								<option value="Baze Podataka" name="Baze Podataka">Baze Podataka</option>
-								<option value="Matematike" name="Matematike">Matematika</option>
+								<option value="Matematika" name="Matematike">Matematika</option>
+								<option value="Matematika 2" name="Matematike">Matematika 2</option>
+
 							  </select>
 						<br /></div>
 				</div>
@@ -128,45 +157,24 @@
 		<div class="row">
 		
 			  <?php
-				include 'includes/connection.php';
 
-					//Stranice (Pagination);
-					$dbhost = 'localhost';
-					$dbuser = 'root';
-					$dbpass = '';
-					$rec_limit = 10;
-					$conn = mysql_connect($dbhost, $dbuser, $dbpass);
-					if(! $conn )
-					{
-					  die('Could not connect: ' . mysql_error());
-					}
+
+
 					/* Get total number of records */
-					mysql_select_db('tvzb');
-					$sql = "SELECT count(ID) FROM tva ";
-					$retval = mysql_query( $sql, $conn );
-					
-					
-					
-					$person =  mysql_fetch_array($retval, MYSQL_NUM );
-					$rec_count = $person[0];
-					if( isset($_GET{'page'} ) )
-						{
-						   $page = $_GET{'page'} + 1;
-						   $offset = $rec_limit * $page ;
-						}
-						else
-						{
-						   $page = 0;
-						   $offset = 0;
-						}
-					$left_rec = $rec_count - ($page * $rec_limit);
-					$sql = "SELECT ID, Ime, Pitanje, Kategorija, Datum  FROM tva ORDER BY `tva`.`ID` DESC LIMIT $offset, $rec_limit";
-					$retval = mysql_query( $sql, $conn );
-					if(! $retval )
-					{
-					  die('Could not get data: ' . mysql_error());
+					$user = 'root';
+					$db = 'tvzb';
+					$host = 'localhost';
+					$pass = '123';
+
+					$conn = mysqli_connect("localhost","root","123","tvzb") or die("Error " . mysqli_error($conn)); 
+					$sql = "SELECT ID, Ime, Pitanje, Kategorija, Datum FROM tva ORDER BY ID DESC";
+					$result = mysqli_query($conn, $sql) or die ('Error updating database: '.mysql_error($result));;
+
+					if(!$result){
+
+						echo 'No data!';
 					}
-					while($person = mysql_fetch_array($retval, MYSQL_ASSOC))
+					while($person = mysqli_fetch_array($result, MYSQL_ASSOC))
 					{
 						echo '<div class="col-md-4">';
 						echo "<h3>" . "Pitanje #" . $person['ID'] . " iz " . $person['Kategorija'] . "</h3>";
@@ -177,8 +185,9 @@
 						$id = $person['ID'];
 						$url = 'odgovori.php?id=' . $id;
 						//Stvaranje brojaca odgovora
-						$r = mysql_query("SELECT * FROM tvo WHERE Br = '$id'");
-						$row = mysql_num_rows($r);
+						$sql = "SELECT * FROM tvo WHERE Br = '$id'";
+						$r = mysqli_query($conn, $sql);
+						$row = mysqli_num_rows($r);
 						//Odgovor na postavljeno pitanje sa brojacem
 						echo '<a href="' . $url . '" class="btn btn-danger" value="submit" >Komentari <span class="badge">' . $row . '</span></a>';
 						echo '</div>';
@@ -196,7 +205,7 @@
 						</nav> ';
 						echo '</div>';
 						}
-						else if( $page == 0 )
+						else if( $page == 1 )
 						{
 						
 						echo '<div class="col-lg-12">';
@@ -219,10 +228,29 @@
 						echo '</div>';
 						  
 						}
-						mysql_close($conn);
+						mysqli_close($conn);
 						?>
 		</div>
 	</div>
+
+
+	<!-- LOGIN -->
+	<div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    	  <div class="modal-dialog">
+				<div class="loginmodal-container">
+					<h1>Prijavite se!</h1><br>
+				  <form action="login.php" method="POST">
+					<input type="text" name="user" placeholder="Korisničko ime">
+					<input type="password" name="pass" placeholder="Lozinka">
+					<input type="submit" name="login" class="login loginmodal-submit" value="Prijava">
+				  </form>
+					
+				  <div class="login-help">
+					<a href="register.php">Registracija</a> - <a href="forgotyourpass.php">Zaboravili lozinku?</a>
+				  </div>
+				</div>
+			</div>
+		  </div>
 	
 	
 	<!-- footer -->
@@ -230,7 +258,7 @@
 		<div class="container">
 		
 			<div class="navbar-text pull-left">
-				<p>&copy 2014 TVZB</p>
+				<p>&copy 2015 TVZB</p>
 			</div>
 			<div class="navbar-text pull-right">
 				<a href="#"><i class="fa fa-facebook-square fa-2x"></i></a>
@@ -251,25 +279,24 @@
 						<h4 class="text-center">Kontakt</h4>
 					</div>
 					<div class="modal-body">
-							<div class="form-group">
-						
-								<label for="kontakt_ime" class="col-sm-2 control-label">Ime:</label>
-								<div class="col-sm-10">
-									<input type="text" class="form-control" id="kontakt_ime" name="kontakt_ime" placeholder="Ime ili Nadimak">
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="kontakt_email" class="col-sm-2 control-label">E-mail:</label>
-								<div class="col-sm-10">
-									<input type="email" class="form-control" id="kontakt_email" name="kontakt_email" placeholder="Vaša E-mail adresa">
-								</div>
-							</div>
-							<div class="form-group">
-								<label for="kontakt_rijedlog" class="col-sm-2 control-label">Prijedlog:</label>
-								<div class="col-sm-10">
-									<textarea class="form-control" id="kontakt_prijedlog" name="kontakt_prijedlog" rows="4" placeholder="Kako bi Vi unaprijedili stranicu?"></textarea>
-								</div>
-							</div>
+						<div class="form-group">
+					        <label for="name" class="col-sm-2 control-label">Ime</label>
+					        <div class="col-sm-10">
+					            <input type="text" class="form-control" id="name" name="name" placeholder="First & Last Name" value="">
+					        </div>
+					    </div>
+					    <div class="form-group">
+					        <label for="email" class="col-sm-2 control-label">Email</label>
+					        <div class="col-sm-10">
+					            <input type="email" class="form-control" id="email" name="email" placeholder="example@domain.com" value="">
+					        </div>
+					    </div>
+					    <div class="form-group">
+					        <label for="message" class="col-sm-2 control-label">Poruka</label>
+					        <div class="col-sm-10">
+					            <textarea class="form-control" rows="4" name="message"></textarea>
+					        </div>
+					    </div>
 					</div>
 							<div class="modal-footer">
 								<button type="submit" name="submit" id="submit" name="submit" class="btn btn-primary">Pošalji!</button></input>

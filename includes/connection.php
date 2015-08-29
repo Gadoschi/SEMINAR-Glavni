@@ -2,10 +2,9 @@
 
 	$dbhost = 'localhost';
 	$dbuser = 'root';
-	$dbpass = '';
+	$dbpass = '123';
 	$db = 'tvzb';
 	
-	$conn =  mysql_connect($dbhost, $dbuser, $dbpass) or die ('Error connecting to MySQL server');
-	mysql_select_db($db);
+	$conn =  mysqli_connect($dbhost, $dbuser, $dbpass, $db) or die ('Error connecting to MySQL server');
 	
 ?>

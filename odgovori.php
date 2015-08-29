@@ -56,45 +56,54 @@
 			</div>
 			<div class="navbar-collapse collapse">
 				<ul class="nav navbar-nav navbar-right">
-					<li class="active"><a href="index.php">Početna</a></li>
-					<li class="default"><a href="pitanje.php">Postavi Pitanje!</a></li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">I godina<b class="caret"></b></a>
 						<ul class="dropdown-menu">
 							<li class="dropdown-header">1. semestar</li>
-							<li><a href="#">Programiranje</a></li>
-							<li><a href="#">uvod u WEB tehnologije</a></li>
-							<li><a href="#">OOP</a></li>
+							<li><a href="./trazi.php?kolegij=Fizika">Fizika</a></li>
+							<li><a href="./trazi.php?kolegij=Matematika">Matematika</a></li>
+							<li><a href="./trazi.php?kolegij=Primjena Računala">Primjena Računala</a></li>
+							<li><a href="./trazi.php?kolegij=Programiranje">Programiranje</a></li>
+							<li><a href="./trazi.php?kolegij=Engleski jezik">Engleski jezik</a></li>
+							<li><a href="./trazi.php?kolegij=Njemački jezik">Njemački jezik</a></li>
 							<li class="divider"></li>
 							<li class="dropdown-header">2. semestar</li>
-							<li><a href="#">Baze podataka</a></li>
-							<li><a href="#">Arhitektura računala</a></li>
+							<li><a href="./trazi.php?kolegij=Matematika 2">Matematika II</a></li>
+							<li><a href="./trazi.php?kolegij=Objektno Orijentirano Programiranje">OOP</a></li>
+							<li><a href="./trazi.php?kolegij=Osnove Elektrotehnike">OEE</a></li>
+							<li><a href="./trazi.php?kolegij=Uvod u Web Tehnologije">UWT</a></li>
+							<li><a href="./trazi.php?kolegij=Poslovni engleski jezik">Poslovni engleski jezik</a></li>
+							<li><a href="./trazi.php?kolegij=Poslovni njemački jezik">Poslovni njemački jezik</a></li>
+
 						</ul>
 					</li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">II godina<b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li class="dropdown-header">1. semestar</li>
-							<li><a href="#">Programiranje</a></li>
-							<li><a href="#">uvod u WEB tehnologije</a></li>
-							<li><a href="#">OOP</a></li>
+							<li class="dropdown-header">3. semestar</li>
+							<li><a href="./trazi.php?kolegij=Algoritmi i Strukture Podataka">Algoritmi i strukture podataka</a></li>
+							<li><a href="./trazi.php?kolegij=Arhitektura Računala">Arhitektura računala</a></li>
+							<li><a href="./trazi.php?kolegij=Operacijski Sustavi">Operacijski sustavi</a></li>
+							<li><a href="./trazi.php?kolegij=Programiranje u Jeziku Jawa">Programiranje u jeziku Java</a></li>
+							<li><a href="./trazi.php?kolegij=Vjerojatnost i Statistika">Vjerojatnost i statistika</a></li>
 							<li class="divider"></li>
-							<li class="dropdown-header">2. semestar</li>
-							<li><a href="#">Baze podataka</a></li>
-							<li><a href="#">Arhitektura računala</a></li>
+							<li class="dropdown-header">4. semestar</li>
+							<li><a href="./trazi.php?kolegij=Baze Podataka">Baze podataka</a></li>
+							<li><a href="./trazi.php?kolegij=Programski Alati u Programiranju">Programski alati u programiranju</a></li>
+							<li><a href="./trazi.php?kolegij=Računalne Mreže">Računalne mreže</a></li>
+							<li><a href="./trazi.php?kolegij=Uvod u UNIX Sustave">Uvod u UNIX sustave</a></li>
 						</ul>
 					</li>
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">II godina<b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li class="dropdown-header">1. semestar</li>
-							<li><a href="#">Programiranje</a></li>
-							<li><a href="#">uvod u WEB tehnologije</a></li>
-							<li><a href="#">OOP</a></li>
+							<li class="dropdown-header">5. semestar</li>
+							<li><a href="./trazi.php?kolegij=Administracija Računalnih Mreža">Administracija računalnih mreža</a></li>
+							<li><a href="./trazi.php?kolegij=Administriranje UNIX Sustava">Administriranje UNIX sustava</a></li>
+							<li><a href="./trazi.php?kolegij=Seminar">Seminar</a></li>
 							<li class="divider"></li>
-							<li class="dropdown-header">2. semestar</li>
-							<li><a href="#">Baze podataka</a></li>
-							<li><a href="#">Arhitektura računala</a></li>
+							<li class="dropdown-header">6. semestar</li>
+							<li><a href="./trazi.php?kolegij=Završni Rad">Završni rad</a></li>
 						</ul>
 					</li>
 					<li><a href="#contact" data-toggle="modal">Kontakt</a></li>
@@ -116,26 +125,43 @@
 				include 'includes/connection.php';
 					
 					
-						echo '<div style="background-color: #eeeeee;" class=".col-xs-12 .col-md-8">';
-						echo "<h3>" . "Pitanje #" . $person['ID'] . " iz " . $person['Kategorija'] . "</h3>";
-						echo "<h4>" . $person['Pitanje'] . "</h4>";
-						echo "<p>" . "Pitanje postavio: " .  $person['Ime'] . "</p>";
-						echo "<p>" . "Objavljeno: " . $person['Datum'] . "</p>";
-						echo '</div>';
+						$sql = "SELECT * FROM tva WHERE ID = '$member'";
+						$result = mysqli_query($conn, $sql);
+						if(!$result){
+							echo 'Greška';
+						}
 
+						while($person = mysqli_fetch_array($result, MYSQL_ASSOC))
+						{
+							echo '<div style="background-color: #eeeeee;" class=".col-xs-12 .col-md-8">';
+							echo "<h3>" . "Pitanje #" . $person['ID'] . " iz " . $person['Kategorija'] . "</h3>";
+							echo "<h4>" . $person['Pitanje'] . "</h4>";
+							echo "<p>" . "Pitanje postavio: " .  $person['Ime'] . "</p>";
+							echo "<p>" . "Objavljeno: " . $person['Datum'] . "</p>";
+							echo '</div>';
+						}
+
+					
+						
 				?>
 				
 				  <?php
-				include 'includes/connection.php';
+					include 'includes/connection.php';
 				
 					//Uzimanje ID-a preko sessiona i trazenje odgovora za odredeno pitanje
 					$konacno = $_SESSION['ajdi'];
-					$query = "SELECT * FROM tvo WHERE Br = '$konacno'";
-					$result = mysql_query($query);
-					$osoba = mysql_fetch_array($result);
+
+					$sql = "SELECT * FROM `tvo` WHERE Br = '$konacno'";
+					$result = mysqli_query($conn, $sql);
+
+					if(!$result){
+						echo 'ne';
+					}
+
+					$osoba = mysqli_fetch_array($result, MYSQL_ASSOC);
 					
 					//brojac redova
-					$brodg = mysql_num_rows($result);
+					$brodg = mysqli_num_rows($result);
 
 					//Ispis prvog retka u tablici koji se ne ispisuje
 					if($brodg == 0)
@@ -151,7 +177,7 @@
 						
 					
 					
-					while($osoba = mysql_fetch_array($result))
+					while($osoba = mysqli_fetch_array($result))
 					{
 						
 						echo "<hr>";
@@ -169,7 +195,7 @@
 		
 			<div class=".col-xs-6 .col-md-4">
 			<div class="odg">
-				<h2>&nbspPomozite kolegi i napišite odgovor!</h2>
+				<h2>Pomozite kolegi i napišite odgovor!</h2>
 				<form action="odgovor.php" method="POST">
 					<div class="form-group">
 						<label for="Nick" class="col-sm-2 control-label">Ime:</label>
@@ -199,7 +225,7 @@
 		<div class="container">
 		
 			<div class="navbar-text pull-left">
-				<p>&copy 2014 TVZB</p>
+				<p>&copy 2015 TVZB</p>
 			</div>
 			<div class="navbar-text pull-right">
 				<a href="#"><i class="fa fa-facebook-square fa-2x"></i></a>

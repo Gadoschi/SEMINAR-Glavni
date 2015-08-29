@@ -19,7 +19,8 @@
     <![endif]-->
   </head>
   <body>
-    
+  
+
 	<div class="navbar navbar-inverse nabvar-fixed-top" role="navigation">
 		<div class="container">
 			<div class="navbar-header">
@@ -89,28 +90,130 @@
 		</div>
 	</div>
 	
+	<!-- POCETAK FORME -->	
+	
 	<div class="container">
 		<div class="jumbotron text-center">
-			<h1>Vaša poruka je poslana!</h1>
-			<p>
-
-			<?php
-
-			$name = $_POST['name'];
-	        $email = $_POST['email'];
-	        $message = $_POST['message'];
-	        $from = 'Demo Contact Form'; 
-	        $to = 'gadoschi@gmail.com'; 
-	        $subject = 'Message from Contact Demo ';
-	        
-	        $body = "Od: $name\n E-Mail: $email\n Poruka:\n $message";
-
-	        mail ($to, $subject, $body, $from)
-			?></p>
-									
-			<a href="index.php" class="btn btn-primary">Na početnu!</a>
+			<h1>TVZ Board</h1>
+			<p>Postavite pitanje!</p>
+			<form action="pitanje.php" method="post">
+			
+				<div class="form-group">
+					<label for="Ime" class="col-sm-2 control-label">Ime:</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="Ime" name="Ime" required placeholder="Ime ili Nadimak">
+						<br /></div>
+				</div>
+							
+				<div class="form-group">
+					<label for="Kategorija" class="col-sm-2 control-label">Kategorija:</label>
+						<div class="col-sm-10">
+							<select class="form-control" id="Kategorija" name="Kategorija">
+								<option value="Programiranja" name="Programiranje">Programiranje</option>
+								<option value="Elektrotehnike" name="Elektrotehnika">Elektrotehnika</option>
+								<option value="Baze Podataka" name="Baze Podataka">Baze Podataka</option>
+								<option value="Matematike" name="Matematike">Matematika</option>
+								<option value="Matematike" name="Matematike">Matematika 2</option>
+							  </select>
+						<br /></div>
+				</div>
+				<div class="form-group">
+								<label for="Pitanje" class="col-sm-2 control-label">Pitanje:</label>
+								<div class="col-sm-10">
+									<textarea class="form-control" id="Pitanje" name="Pitanje" rows="4" placeholder="Upišite pitanje!" required></textarea>
+								<br /></div>
+								
+						<!-- CAPTCHA -->	
+						<div class="form-group">
+								<img src="captcha.php"> &nbsp <input type="text" name="vercode" />
+						</div>
+								
+					</div>
+							
+				<br />
+				<input type="submit" name="submit" />
+			</form>
 		</div>
 		
+			
+		<!-- PAGINATION -->	
+		<div class="row">
+		
+			  <?php
+
+			  		$kolegij = $_GET['kolegij'];
+
+					/* Get total number of records */
+					$user = 'root';
+					$db = 'tvzb';
+					$host = 'localhost';
+					$pass = '123';
+
+					$conn = mysqli_connect("localhost","root","123","tvzb") or die("Error " . mysqli_error($conn)); 
+					$sql = "SELECT ID, Ime, Pitanje, Kategorija, Datum FROM tva WHERE Kategorija = '$kolegij' ORDER BY ID DESC";
+					$result = mysqli_query($conn, $sql) or die ('Error updating database: '.mysql_error($result));;
+
+					if(!$result){
+
+						echo 'No data!';
+					}
+					while($person = mysqli_fetch_array($result, MYSQL_ASSOC))
+					{
+						echo '<div class="col-md-4">';
+						echo "<h3>" . "Pitanje #" . $person['ID'] . " iz " . $person['Kategorija'] . "</h3>";
+						echo "<h4>" . $person['Pitanje'] . "</h4>";
+						echo "<p>" . "Pitanje postavio: " .  $person['Ime'] . "</p>";
+						echo "<p>" . "Objavljeno: " . $person['Datum'] . "</p>";
+						//Stvaranje URL-a
+						$id = $person['ID'];
+						$url = 'odgovori.php?id=' . $id;
+						//Stvaranje brojaca odgovora
+						$sql = "SELECT * FROM tvo WHERE Br = '$id'";
+						$r = mysqli_query($conn, $sql);
+						$row = mysqli_num_rows($r);
+						//Odgovor na postavljeno pitanje sa brojacem
+						echo '<a href="' . $url . '" class="btn btn-danger" value="submit" >Komentari <span class="badge">' . $row . '</span></a>';
+						echo '</div>';
+					}
+						if( $page > 0 )
+						{
+						   $last = $page - 2;
+						   echo '<div class="col-lg-12">';
+						echo '<nav>';
+						  echo '<ul class="pager">';
+							echo "<li><a href=\"$_PHP_SELF?page=$last\">Prijašnja</a></li>";
+							echo "<li><a href=\"$_PHP_SELF?page=$last\"> $page </a></li>";
+							echo "<li><a href=\"$_PHP_SELF?page=$page\">Sljedeća</a></li>";
+						  echo '</ul>
+						</nav> ';
+						echo '</div>';
+						}
+						else if( $page == 1 )
+						{
+						
+						echo '<div class="col-lg-12">';
+						echo '<nav>';
+						  echo '<ul class="pager">';
+							echo "<li><a href=\"$_PHP_SELF?page=$page\">Sljedeća</a></li>";
+						  echo '</ul>
+						</nav> ';
+						echo '</div>';
+						}
+						else if( $left_rec < $rec_limit )
+						{
+						   $last = $page - 2;
+						   echo '<div class="col-lg-12">';
+						echo '<nav>';
+						  echo '<ul class="pager">';
+							 echo "<li><a href=\"$_PHP_SELF?page=$last\">Prijašnja</a></li>";
+						  echo '</ul>
+						</nav> ';
+						echo '</div>';
+						  
+						}
+						mysqli_close($conn);
+						?>
+		</div>
 	</div>
 	
 	
@@ -119,7 +222,7 @@
 		<div class="container">
 		
 			<div class="navbar-text pull-left">
-				<p>&copy 2014 TVZB</p>
+				<p>&copy 2015 TVZB</p>
 			</div>
 			<div class="navbar-text pull-right">
 				<a href="#"><i class="fa fa-facebook-square fa-2x"></i></a>
@@ -135,24 +238,41 @@
 	<div class="modal fade" id="contact" role="dialog">
 		<div class="modal-dialog">
 			<div class="modal-content">
-
+				<form class="form-horizontal" role="form" action="output.php" method="post">
 					<div class="modal-header">
 						<h4 class="text-center">Kontakt</h4>
 					</div>
 					<div class="modal-body">
 							<div class="form-group">
 						
-								
+								<label for="kontakt_ime" class="col-sm-2 control-label">Ime:</label>
+								<div class="col-sm-10">
+									<input type="text" class="form-control" id="kontakt_ime" name="kontakt_ime" placeholder="Ime ili Nadimak">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="kontakt_email" class="col-sm-2 control-label">E-mail:</label>
+								<div class="col-sm-10">
+									<input type="email" class="form-control" id="kontakt_email" name="kontakt_email" placeholder="Vaša E-mail adresa">
+								</div>
+							</div>
+							<div class="form-group">
+								<label for="kontakt_rijedlog" class="col-sm-2 control-label">Prijedlog:</label>
+								<div class="col-sm-10">
+									<textarea class="form-control" id="kontakt_prijedlog" name="kontakt_prijedlog" rows="4" placeholder="Kako bi Vi unaprijedili stranicu?"></textarea>
+								</div>
 							</div>
 					</div>
 							<div class="modal-footer">
 								<button type="submit" name="submit" id="submit" name="submit" class="btn btn-primary">Pošalji!</button></input>
 								<a class="btn btn-default" data-dismiss="modal">Zatvori</a>
 							</div>
-						
+						</form>
 			</div>
 		</div>
 	</div>
+	
+	
 	
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->

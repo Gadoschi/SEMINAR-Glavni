@@ -32,9 +32,15 @@
 								$nick = $_POST['Nick'];
 								$odgovor = $_POST['Odgovor'];
 								
-								mysql_query("INSERT INTO `tvzb`.`tvo` (`ID`, `Br`, `Nick`, `Odgovor`, `Datum`) VALUES(NULL, '{$_SESSION['ajdi']}','$nick', '$odgovor', NOW()) ") or die(mysql_error()); 
-								echo '<div class="alert alert-success" role="alert">Uspješno ste postavili odgovor!</div>';
-								header( "refresh:2; url=odgovori.php?id={$_SESSION['ajdi']}" );
+								$sql = "INSERT INTO `tvzb`.`tvo` (`ID`, `Br`, `Nick`, `Odgovor`, `Datum`) VALUES(NULL, '{$_SESSION['ajdi']}','$nick', '$odgovor', NOW() )";
+								$result = mysqli_query($conn, $sql);
+								if(!$result){
+									echo 'ne radi!';
+								}else{
+									echo '<div class="alert alert-success" role="alert">Uspješno ste postavili odgovor!</div>';
+									header( "refresh:2; url=odgovori.php?id={$_SESSION['ajdi']}" );
+								}
+							
 								
 							}
 							?>
