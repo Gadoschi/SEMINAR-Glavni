@@ -28,7 +28,8 @@
 	if(isset($_POST['login'])){
 		$user = $_POST['user'];
 		$pass = $_POST['pass'];
-
+		$pass = md5($pass);
+		
 		$user = mysqli_real_escape_string($conn, $user);
 
 		$_SESSION['user'] = $user;

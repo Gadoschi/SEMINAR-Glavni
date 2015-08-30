@@ -19,9 +19,12 @@
     <![endif]-->
   </head>
   <body>
-  
-  <?php
+
+    <?php
   	session_start();
+  	if($_SESSION['user'] != NULL){
+		header("Location:index.php");
+  	}
   ?>
     
 	<div class="navbar navbar-inverse nabvar-fixed-top" role="navigation">
@@ -105,154 +108,96 @@
 			</div> <!--/.nav-collapse -->
 		</div>
 	</div>
+
+  
 	
-	<!-- POCETAK FORME -->	
-	
+	<!-- FORGOT PASSWORD FORM -->
 	<div class="container">
-		<div class="jumbotron text-center">
-			<h1>TVZ Board</h1>
-			<p>Postavite pitanje!</p>
-			<form action="pitanje.php" method="post">
-			
-				<div class="form-group">
-					<label for="Ime" class="col-sm-2 control-label">Ime:</label>
-						<div class="col-sm-10">
-							<input type="text" class="form-control" id="Ime" name="Ime" required placeholder="Ime ili Nadimak">
-						<br /></div>
-				</div>
-							
-				<div class="form-group">
-					<label for="Kategorija" class="col-sm-2 control-label">Kategorija:</label>
-						<div class="col-sm-10">
-							<select class="form-control" id="Kategorija" name="Kategorija">
-								<option value="Programiranja" name="Programiranje">Programiranje</option>
-								<option value="Elektrotehnike" name="Elektrotehnika">Elektrotehnika</option>
-								<option value="Baze Podataka" name="Baze Podataka">Baze Podataka</option>
-								<option value="Matematika" name="Matematike">Matematika</option>
-								<option value="Matematika 2" name="Matematike">Matematika 2</option>
+	    <div class="row">
+	        <div class="row">
+	            <div class="col-md-4 col-md-offset-4">
+	                <div class="panel panel-default">
+	                    <div class="panel-body">
+	                        <div class="text-center">
+	                          <img src="https://cloud.digitalocean.com/assets/cloud-logo-0efc9110ac89b1ea38fc7ee2475a3e87.svg" class="login" height="70">
+	                          <h3 class="text-center">Zboravili lozinku?</h3>
+	                          <p>Ako ste zaboravili lozinku resetirajte je ovdje!</p>
+	                            <div class="panel-body">
+	                              
+	                              <form class="form" action="forgotyourpass.php" method="POST">
+	                                <fieldset>
+	                                  <div class="form-group">
+	                                    <div class="input-group">
+	                                      <span class="input-group-addon"><i class="glyphicon glyphicon-envelope color-blue"></i></span>
+	                                      <!--EMAIL ADRESA-->
+	                                      <input id="email" name="email" placeholder="email adresa" class="form-control" type="email" oninvalid="setCustomValidity('Molimo Vas da unesete važeću email adresu!')" onchange="try{setCustomValidity('')}catch(e){}" required="">
+	                                    </div>
+	                                  </div>
+	                                  <div class="form-group">
+	                                    <input class="btn btn-lg btn-primary btn-block" value="Pošalji mi lozinku" type="submit" name="submit">
+	                                    <!-- FORMA ZA SLANJE LOZINKE -->
+											<?php
+												
+												include 'includes/connection.php';
 
-							  </select>
-						<br /></div>
-				</div>
-				<div class="form-group">
-								<label for="Pitanje" class="col-sm-2 control-label">Pitanje:</label>
-								<div class="col-sm-10">
-									<textarea class="form-control" id="Pitanje" name="Pitanje" rows="4" placeholder="Upišite pitanje!" required></textarea>
-								<br /></div>
-								
-						<!-- CAPTCHA -->	
-						<div class="form-group">
-								<img src="captcha.php"> &nbsp <input type="text" name="vercode" />
-						</div>
-								
-					</div>
-							
-				<br />
-				<input type="submit" name="submit" value="Pošalji!" />
-			</form>
-		</div>
-		
-			
-		<!-- PAGINATION -->	
-		<div class="row">
-		
-			  <?php
+												if(isset($_POST['submit'])){
+													$email = $_POST['email'];
+													$email = mysqli_real_escape_string($conn, $email);
 
+													$query = "SELECT * FROM tvu WHERE email = '".$email."'";
+													$result = mysqli_query($conn,$query);
+													$count = mysqli_num_rows($result);
 
+													//Provjera E-mail u bazi
+													if($count != 0){
+														//Stvaranje nove lozinke
+														$random = rand(72681, 92729);
+														$new_password = $random;
+														echo $new_password;
+														//Kopija lozinke jer u bazu ulazi MD5 hash
+														$email_password = $new_password;
 
-					/* Get total number of records */
-					$user = 'root';
-					$db = 'tvzb';
-					$host = 'localhost';
-					$pass = '123';
+														//MD5 random lozinke ide u bazu
+														$new_password = md5(new_password);
 
-					$conn = mysqli_connect("localhost","root","123","tvzb") or die("Error " . mysqli_error($conn)); 
-					$sql = "SELECT ID, Ime, Pitanje, Kategorija, Datum FROM tva ORDER BY ID DESC";
-					$result = mysqli_query($conn, $sql) or die ('Error updating database: '.mysql_error($result));;
+														//Ažuriranje baze
+														$sql = "UPDATE tvu SET password = '$new_password' WHERE email = '".$email."'";
+														$result = mysqli_query($conn, $sql);
+														if(!mysqli_query($conn, $sql)){
+															echo '<div class="alert alert-warning" role="alert">Greška!</div>';
+														}
 
-					if(!$result){
+														//Slanje lozinke korisniku
+														$subject = "Nova lozinka";
+														$message = "Vaša lozinka je promijenjena: $email_password";
+														$from = "From: lgado@tvz.hr"; 
+														mail($email, $subject, $message, $from);
+														echo '<div class="alert alert-success" role="alert">Vaša nova lozinka je poslana na Vašu Email adresu!</div>';		
+														header("Refresh:2;url=index.php");
+														}else{
+															echo '<div class="alert alert-warning" role="alert">Unijeli ste nepostojeći Email!</div>';
+															echo '<div class="alert alert-warning" role="alert">Molimo Vas pokušajte ponovno!</div>';
+														}
 
-						echo 'No data!';
-					}
-					while($person = mysqli_fetch_array($result, MYSQL_ASSOC))
-					{
-						echo '<div class="col-md-4">';
-						echo "<h3>" . "Pitanje #" . $person['ID'] . " iz " . $person['Kategorija'] . "</h3>";
-						echo "<h4>" . $person['Pitanje'] . "</h4>";
-						echo "<p>" . "Pitanje postavio: " .  $person['Ime'] . "</p>";
-						echo "<p>" . "Objavljeno: " . $person['Datum'] . "</p>";
-						//Stvaranje URL-a
-						$id = $person['ID'];
-						$url = 'odgovori.php?id=' . $id;
-						//Stvaranje brojaca odgovora
-						$sql = "SELECT * FROM tvo WHERE Br = '$id'";
-						$r = mysqli_query($conn, $sql);
-						$row = mysqli_num_rows($r);
-						//Odgovor na postavljeno pitanje sa brojacem
-						echo '<a href="' . $url . '" class="btn btn-danger" value="submit" >Komentari <span class="badge">' . $row . '</span></a>';
-						echo '</div>';
-					}
-						if( $page > 0 )
-						{
-						   $last = $page - 2;
-						   echo '<div class="col-lg-12">';
-						echo '<nav>';
-						  echo '<ul class="pager">';
-							echo "<li><a href=\"$_PHP_SELF?page=$last\">Prijašnja</a></li>";
-							echo "<li><a href=\"$_PHP_SELF?page=$last\"> $page </a></li>";
-							echo "<li><a href=\"$_PHP_SELF?page=$page\">Sljedeća</a></li>";
-						  echo '</ul>
-						</nav> ';
-						echo '</div>';
-						}
-						else if( $page == 1 )
-						{
-						
-						echo '<div class="col-lg-12">';
-						echo '<nav>';
-						  echo '<ul class="pager">';
-							echo "<li><a href=\"$_PHP_SELF?page=$page\">Sljedeća</a></li>";
-						  echo '</ul>
-						</nav> ';
-						echo '</div>';
-						}
-						else if( $left_rec < $rec_limit )
-						{
-						   $last = $page - 2;
-						   echo '<div class="col-lg-12">';
-						echo '<nav>';
-						  echo '<ul class="pager">';
-							 echo "<li><a href=\"$_PHP_SELF?page=$last\">Prijašnja</a></li>";
-						  echo '</ul>
-						</nav> ';
-						echo '</div>';
-						  
-						}
-						mysqli_close($conn);
-						?>
-		</div>
+												}
+
+											?>
+	                                  </div>
+	                                </fieldset>
+	                              </form><!--/end form-->
+	                              
+	                            </div>
+	                        </div>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
 	</div>
 
 
-	<!-- LOGIN -->
-	<div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
-    	  <div class="modal-dialog">
-				<div class="loginmodal-container">
-					<h1>Prijavite se!</h1><br>
-				  <form action="login.php" method="POST">
-					<input type="text" name="user" placeholder="Korisničko ime">
-					<input type="password" name="pass" placeholder="Lozinka">
-					<input type="submit" name="login" class="login loginmodal-submit" value="Prijava">
-				  </form>
-					
-				  <div class="login-help">
-					<a href="register.php">Registracija</a> - <a href="forgotyourpass.php">Zaboravili lozinku?</a>
-				  </div>
-				</div>
-			</div>
-		  </div>
 	
-	
+
 	<!-- footer -->
 	<div class="navbar navbar-inverse navbar-fixed-bottom" role="navigation">
 		<div class="container">
@@ -314,5 +259,5 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="js/bootstrap.min.js"></script>
-  </body>
+</body>
 </html>
